@@ -18,7 +18,7 @@ using Tangine;
 namespace SonicScript
 {
     [Module("SonicScript", "Script for playing the sonic game automaticly")]
-    [Author("Yonas")]
+    [Author("JustYonas")]
     public partial class SonicScript : ExtensionForm
     {
         #region something
