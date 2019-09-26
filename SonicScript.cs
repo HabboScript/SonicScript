@@ -9,6 +9,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -41,6 +42,7 @@ namespace SonicScript
         {
             InitializeComponent();
             StateChanged();
+            AllocConsole();
         }
 
         private void StateChanged()
@@ -232,6 +234,12 @@ namespace SonicScript
         }
 
 
+        #region logging
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
+
+        #endregion
 
 
 
