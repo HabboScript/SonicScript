@@ -3,15 +3,9 @@ using Sulakore.Communication;
 using Sulakore.Modules;
 using Sulakore.Protocol;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 using Tangine;
 
@@ -58,7 +52,6 @@ namespace SonicScript
                 $"ColorTile1Data: {colorTile1Data} {newline}" +
                 $"ColorTile2Data: {colorTile2Data} {newline}" +
                 $"State: {scriptState} {newline}" +
-
                 "";
             _configLabel.Text = t;
         }
@@ -74,25 +67,44 @@ namespace SonicScript
                 UseItem(_config.SwitchId);
             }
         }
-      
+        int lastTile = 0;
         private void OnExtraDataUpdate(DataInterceptedEventArgs e)
         {
             string itemId = e.Packet.ReadString();
             int extraDataType = e.Packet.ReadInteger();
-
+            if (extraDataType != 0)
+            {
+                return;
+            }
             switch (scriptState)
             {
                 case ScriptState.started:
                     {
                         if (itemId == _config.ColorTile1.ToString())
                         {
+                            lastTile = _config.ColorTile1;
                             colorTile1Data = e.Packet.ReadString();
-                            CheckState();
+                            new Thread(() =>
+                            {
+                                Thread.Sleep(300);
+                                if (lastTile == _config.ColorTile1)
+                                {
+                                    CheckState();
+                                }
+                            }).Start();
                         }
                         else if (itemId == _config.ColorTile2.ToString())
                         {
+                            lastTile = _config.ColorTile1;
                             colorTile2Data = e.Packet.ReadString();
-                            CheckState();
+                            new Thread(() =>
+                            {
+                                Thread.Sleep(300);
+                                if (lastTile == _config.ColorTile1)
+                                {
+                                    CheckState();
+                                }
+                            }).Start();
                         }
                         break;
                     }
